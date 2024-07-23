@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Table(name="illuminance")
 public class Illuminance {
     @Id
     private long id;
