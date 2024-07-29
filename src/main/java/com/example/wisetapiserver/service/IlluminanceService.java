@@ -29,6 +29,10 @@ public class IlluminanceService {
         return repository.findTopByOrderByTimestampDesc();
     }
 
+    public Double getAverageValue() {
+        return repository.findAverageValue();
+    }
+
     public String getSun(double longitude, double latitude) throws IOException, ParserConfigurationException, SAXException {
 
         LocalDate date = LocalDate.now();
