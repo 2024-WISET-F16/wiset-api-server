@@ -9,7 +9,4 @@ import org.springframework.stereotype.Repository;
 public interface IlluminanceRepository extends JpaRepository<Illuminance, Long> {
 
     Illuminance findTopByOrderByTimestampDesc();
-
-    @Query("SELECT AVG(i.value) FROM Illuminance i")
-    Double findAverageValue();
 }

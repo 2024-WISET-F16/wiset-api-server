@@ -2,6 +2,7 @@ package com.example.wisetapiserver.service;
 
 import com.example.wisetapiserver.domain.Illuminance;
 import com.example.wisetapiserver.repository.IlluminanceRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -21,6 +22,9 @@ import java.time.format.DateTimeFormatter;
 public class IlluminanceService {
     private final IlluminanceRepository repository;
 
+    @Value("${servicekey}")
+    private String serviceKey;
+
     public IlluminanceService(IlluminanceRepository repository) {
         this.repository = repository;
     }
@@ -29,22 +33,17 @@ public class IlluminanceService {
         return repository.findTopByOrderByTimestampDesc();
     }
 
-    public Double getAverageValue() {
-        return repository.findAverageValue();
-    }
-
-    public String getSun(double longitude, double latitude) throws IOException, ParserConfigurationException, SAXException {
+    public String getSun() throws IOException, ParserConfigurationException,  SAXException {
 
         LocalDate date = LocalDate.now();
         DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyyMMdd");
         String formattedDate = date.format(pattern); // 20241001
 
-        StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getLCRiseSetInfo");
-        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=X%2Fg5l%2FcTa6vbt6MFFqYm7XReQ6N7PUwj1NrQOe7cHuWU8IAQDM1qLOvQRAZ8eU9L4PMG%2BG7ObwZfGncKAWa3zA%3D%3D");
-        urlBuilder.append("&" + URLEncoder.encode("locdate","UTF-8") + "=" + URLEncoder.encode(formattedDate, "UTF-8"));
-        urlBuilder.append("&" + URLEncoder.encode("longitude","UTF-8") + "=" + URLEncoder.encode(String.valueOf(longitude), "UTF-8"));
-        urlBuilder.append("&" + URLEncoder.encode("latitude","UTF-8") + "=" + URLEncoder.encode(String.valueOf(latitude), "UTF-8"));
-        urlBuilder.append("&" + URLEncoder.encode("dnYn","UTF-8") + "=" + URLEncoder.encode("Y", "UTF-8")); /*실수형태(129.xxx)일경우 Y, 도와 분(128도 00분)형태의 경우 N*/
+        StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo");
+        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=" + serviceKey);
+        urlBuilder.append("&" + URLEncoder.encode("locdate","UTF-8") + "=" + URLEncoder.encode(formattedDate, "UTF-8")); /*날짜*/
+        urlBuilder.append("&" + URLEncoder.encode("location","UTF-8") + "=" + URLEncoder.encode("천안", "UTF-8")); /*지역*/
+
         URL url = new URL(urlBuilder.toString());
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -64,8 +63,6 @@ public class IlluminanceService {
         }
         rd.close();
         conn.disconnect();
-
-        System.out.println(sb.toString());
 
         InputStream is = new ByteArrayInputStream(sb.toString().getBytes("UTF-8"));
 
