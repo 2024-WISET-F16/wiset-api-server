@@ -1,11 +1,14 @@
 package com.example.wisetapiserver.repository;
 
 import com.example.wisetapiserver.domain.Illuminance;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface IlluminanceRepository extends JpaRepository<Illuminance, Long> {
+import java.util.Optional;
 
-    Illuminance findTopByOrderByTimestampDesc();
+@Repository
+public interface IlluminanceRepository extends MongoRepository<Illuminance, String> {
+
+    Optional<Illuminance> findFirstByOrderByIdDesc();
 }
+

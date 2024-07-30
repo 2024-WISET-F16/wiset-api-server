@@ -1,20 +1,16 @@
 package com.example.wisetapiserver.domain;
 
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.Getter;
-
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.annotation.Id;
 import java.time.LocalDateTime;
 
-@Entity
+
+@Document(collection = "illuminance")
 @Getter
 public class Illuminance {
     @Id
-    private long id;
-    private double value;
+    private String id;
+    private double illuminance;
     private LocalDateTime timestamp;
-
 }
