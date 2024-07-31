@@ -1,4 +1,4 @@
-package com.example.wisetapiserver.service;
+package com.example.wisetapiserver.service.illuminance;
 
 import com.example.wisetapiserver.domain.Illuminance;
 import com.example.wisetapiserver.repository.IlluminanceRepository;

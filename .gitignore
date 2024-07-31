@@ -7,3 +7,6 @@
 .idea/*.xml
 
 application.properties
+
+.gradle/
+build/
