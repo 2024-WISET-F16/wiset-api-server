@@ -3,8 +3,10 @@ package com.example.wisetapiserver.service.sunposition;
 import java.time.LocalDateTime;
 
 public class SunPosition {
+    private static final double LATITUDE = 36.851221; // 공주대 천안캠의 위도
+    private static final double LONGITUDE = 127.152924; // 공주대 천안캠의 경도
 
-    public static double[] calculateAzEl(LocalDateTime dateTime, double lat, double lng) {
+    public static double[] calculateAzEl(LocalDateTime dateTime) {
         int year = dateTime.getYear();
         int month = dateTime.getMonthValue();
         int day = dateTime.getDayOfMonth();
@@ -17,7 +19,7 @@ public class SunPosition {
         double jday = getJD(year, month, day);
         double total = jday + mins / 1440.0 - utcOffset / 24.0;
         double T = getTimeJulianCent(total);
-        return getAzEl(T, mins, lat, lng, utcOffset);
+        return getAzEl(T, mins, LATITUDE, LONGITUDE, utcOffset);
     }
 
     private static double degToRad(double angleDeg) {
