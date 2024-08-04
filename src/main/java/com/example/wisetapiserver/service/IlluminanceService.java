@@ -33,7 +33,7 @@ public class IlluminanceService {
         return repository.findTopByOrderByTimestampDesc();
     }
 
-    public String getSun() throws IOException, ParserConfigurationException,  SAXException {
+    public String[] getSun() throws IOException, ParserConfigurationException,  SAXException {
 
         LocalDate date = LocalDate.now();
         DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -77,7 +77,9 @@ public class IlluminanceService {
         String formattedRisetime = formatTime(sunrise);
         String formattedSettime = formatTime(sunset);
 
-        return "일출: " + formattedRisetime + " 일몰: " + formattedSettime;
+        String[] sunList = {formattedRisetime, formattedSettime};
+
+        return sunList;
     }
     public String formatTime(String time) {
         String hours = time.substring(0, 2);
