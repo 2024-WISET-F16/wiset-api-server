@@ -3,19 +3,22 @@ package com.example.wisetapiserver.controller;
 import com.example.wisetapiserver.domain.Coordinate;
 import com.example.wisetapiserver.domain.Illuminance;
 import com.example.wisetapiserver.domain.ModelInput;
+import com.example.wisetapiserver.service.SunRiseSetService;
 import com.example.wisetapiserver.service.coordinate.CoordinateService;
 import com.example.wisetapiserver.service.illuminance.IlluminanceService;
-import com.example.wisetapiserver.service.sunposition.SunPosition;
 import com.example.wisetapiserver.service.sunposition.SunPositionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -25,6 +28,7 @@ public class IlluminanceController {
     private final IlluminanceService illuminanceService;
     private final SunPositionService sunPositionService;
     private final CoordinateService coordinateService;
+    private final SunRiseSetService sunRiseSetService;
 
     @GetMapping("/grid")
     public ModelInput getIlluminanceMap(@RequestParam("x") int x, @RequestParam("y") int y) {
@@ -53,5 +57,16 @@ public class IlluminanceController {
     @GetMapping("/test")
     public Optional<Illuminance> getLatestData() {
         return illuminanceService.getLatestData();
+    }
+
+    @GetMapping("/sun/riseAndSet")
+    public Map<String, String> sunRiseAndSet() throws IOException, ParserConfigurationException, SAXException {
+
+        String[] sunList = sunRiseSetService.getSun();
+        Map<String, String> response = new HashMap<>();
+        response.put("sunrise", sunList[0]);
+        response.put("sunset", sunList[1]);
+
+        return response;
     }
 }
