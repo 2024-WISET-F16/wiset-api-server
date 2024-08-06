@@ -3,15 +3,18 @@ package com.example.wisetapiserver.controller;
 import com.example.wisetapiserver.domain.Coordinate;
 import com.example.wisetapiserver.domain.Illuminance;
 import com.example.wisetapiserver.domain.ModelInput;
+import com.example.wisetapiserver.dto.ModelResponse;
 import com.example.wisetapiserver.service.SunRiseSetService;
 import com.example.wisetapiserver.service.coordinate.CoordinateService;
 import com.example.wisetapiserver.service.illuminance.IlluminanceService;
+import com.example.wisetapiserver.service.modelserver.ModelServerService;
 import com.example.wisetapiserver.service.sunposition.SunPositionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.xml.sax.SAXException;
+import reactor.core.publisher.Mono;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
@@ -30,8 +33,10 @@ public class IlluminanceController {
     private final CoordinateService coordinateService;
     private final SunRiseSetService sunRiseSetService;
 
+    private final ModelServerService modelServerService;
+
     @GetMapping("/grid")
-    public ModelInput getIlluminanceMap(@RequestParam("x") int x, @RequestParam("y") int y) {
+    public Mono<ModelResponse> getIlluminanceMap(@RequestParam("x") int x, @RequestParam("y") int y) {
         // MongoDB에서 최신 데이터를 가져옴
         Optional<Illuminance> latestDataOpt = illuminanceService.getLatestData();
         if (latestDataOpt.isEmpty()) {
@@ -50,7 +55,8 @@ public class IlluminanceController {
         List<Coordinate> coordinates = coordinateService.generateCoordinates(x, y);
 
         // ModelInput 객체를 생성하여 반환
-        return new ModelInput(azEl[0], azEl[1], coordinates, illum, x, y);
+        ModelInput modelInput = new ModelInput(azEl[0], azEl[1], coordinates, illum, x, y);
+        return modelServerService.postModelServer(modelInput);
     }
 
 
