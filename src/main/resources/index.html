@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SSE Example</title>
+  <style>
+    #data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    #data-table th, #data-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    #data-table th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+<h1>SSE Illum Data</h1>
+<table id="data-table">
+  <thead>
+  <tr>
+    <th>Index</th>
+    <th>Value 1</th>
+    <th>Value 2</th>
+    <th>Value 3</th>
+  </tr>
+  </thead>
+  <tbody id="data-body">
+  <!-- Data rows will be inserted here -->
+  </tbody>
+</table>
+
+<script>
+  const param1 = 3; // 예시 파라미터 1
+  const param2 = 4; // 예시 파라미터 2
+
+  // SSE 엔드포인트에 파라미터를 포함한 URL
+  const eventSource = new EventSource(`http://localhost:8000/grid?x=${param1}&y=${param2}`);
+  const dataBody = document.getElementById('data-body');
+
+  eventSource.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    const illum = data.illum;
+
+    // Clear existing rows
+    dataBody.innerHTML = '';
+
+    // Populate the table with new data
+    illum.forEach((row, index) => {
+      const tableRow = document.createElement('tr');
+      const indexCell = document.createElement('td');
+      indexCell.textContent = index + 1;
+      tableRow.appendChild(indexCell);
+      row.forEach(value => {
+        const valueCell = document.createElement('td');
+        valueCell.textContent = value;
+        tableRow.appendChild(valueCell);
+      });
+      dataBody.appendChild(tableRow);
+    });
+  };
+
+  eventSource.onerror = function(event) {
+    console.error("Error occurred:", event);
+  };
+</script>
+</body>
+</html>
