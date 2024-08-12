@@ -1,4 +1,4 @@
-package com.example.wisetapiserver.service.modelserver;
+package com.example.wisetapiserver.service.prediction;
 
 import com.example.wisetapiserver.domain.ModelInput;
 import com.example.wisetapiserver.dto.ModelResponse;
@@ -8,7 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Service
-public class ModelServerService {
+public class PredictionApiService {
     public Mono<ModelResponse> postModelServer(ModelInput modelInput){
         // WebClient: 싱글 스레드, Non-Blocking 방식 사용
         WebClient webClient = WebClient.builder().build();

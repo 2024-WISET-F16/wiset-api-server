@@ -7,7 +7,7 @@ import com.example.wisetapiserver.dto.ModelResponse;
 import com.example.wisetapiserver.service.SunRiseSetService;
 import com.example.wisetapiserver.service.coordinate.CoordinateService;
 import com.example.wisetapiserver.service.illuminance.IlluminanceService;
-import com.example.wisetapiserver.service.modelserver.ModelServerService;
+import com.example.wisetapiserver.service.prediction.PredictionApiService;
 import com.example.wisetapiserver.service.sunposition.SunPositionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +33,7 @@ public class IlluminanceController {
     private final CoordinateService coordinateService;
     private final SunRiseSetService sunRiseSetService;
 
-    private final ModelServerService modelServerService;
+    private final PredictionApiService predictionApiService;
 
     @GetMapping("/grid")
     public Mono<ModelResponse> getIlluminanceMap(@RequestParam("x") int x, @RequestParam("y") int y) {
@@ -56,7 +56,7 @@ public class IlluminanceController {
 
         // ModelInput 객체를 생성하여 반환
         ModelInput modelInput = new ModelInput(azEl[0], azEl[1], coordinates, illum, x, y);
-        return modelServerService.postModelServer(modelInput);
+        return predictionApiService.postModelServer(modelInput);
     }
 
 
