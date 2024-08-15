@@ -34,6 +34,9 @@ dependencies {
     // WebClient 사용하기 위한 반응형 웹 관련
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
+    // jackson
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0'
+
 }
 
 tasks.named('test') {
