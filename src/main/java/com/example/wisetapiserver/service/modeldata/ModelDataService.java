@@ -24,7 +24,7 @@ public class ModelDataService {
         this.illuminanceService = illuminanceService;
     }
 
-
+    // 입력 데이터 준비
     public ModelInput ModelData(int x, int y){
         // MongoDB에서 최신 데이터를 가져옴
         Optional<Illuminance> latestDataOpt = illuminanceService.getLatestData();
