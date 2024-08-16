@@ -10,9 +10,10 @@ import reactor.core.publisher.Mono;
 @Service
 public class PredictionApiService {
     public Mono<ModelResponse> postModelServer(ModelInput modelInput){
+
         // WebClient: 싱글 스레드, Non-Blocking 방식 사용
         WebClient webClient = WebClient.builder().build();
-        String url = "http://127.0.0.1:8000/model-data"; // 실제 URL로 대체
+        String url = "http://127.0.0.1:8000/model-data";
 
         return webClient.post()
                 .uri(url) // URL 정의
