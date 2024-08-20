@@ -22,13 +22,7 @@ public class SseController {
         SseEmitter sseEmitter = new SseEmitter(Long.MAX_VALUE); // 파라미터로 timeout 시간
         sseService.addEmitter(sseEmitter);
         sseService.addGrid(x, y);
-        sseService.sendEvents();
 
         return sseEmitter; // 메세지가 발생할 때마다 클라이언트에 반환
-
     }
-
-
-
-
 }
