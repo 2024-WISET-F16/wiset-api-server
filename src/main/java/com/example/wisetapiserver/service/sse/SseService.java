@@ -79,10 +79,10 @@ public class SseService {
         MongoDatabase database = mongoClient.getDatabase("illuminance"); // DB 이름 설정
         MongoCollection<Document> collection = database.getCollection("illuminance"); // 컬렉션 이름 설정
 
-        new Thread(() -> {
+        new Thread(() -> { // MongoDB 컬렉션 변경사항 실시간 감지
             collection.watch()
-                    .fullDocument(FullDocument.UPDATE_LOOKUP)
-                    .forEach(this::databaseChange);
+                    .fullDocument(FullDocument.UPDATE_LOOKUP) // 문서 업데이트될 때 전체 문서 반환
+                    .forEach(this::databaseChange); // 각 변경 사항 처리할 콜백 메서드 지정
         }).start();
     }
 
@@ -97,6 +97,10 @@ public class SseService {
             predictionApiService.postModelServer(modelInput).subscribe(
                     modelResponse -> {
                         try {
+                            // illum 값의 평균을 계산하여 ModelResponse에 설정
+                            Double avgIllum = calculateAverageIllum(modelResponse.getIllum());
+                            modelResponse.setAvg(avgIllum); // 평균 값 설정
+
                             String json = objectMapper.writeValueAsString(modelResponse);
 
                             // 모든 SSE Emitter에 전송
@@ -117,6 +121,25 @@ public class SseService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private Double calculateAverageIllum(List<List<Double>> illum) {
+        if (illum == null || illum.isEmpty()) {
+            return 0.0;
+        }
+
+        double sum = illum.stream()
+                .flatMap(List::stream)
+                .mapToDouble(Double::doubleValue)
+                .sum();
+        long count = illum.stream()
+                .flatMap(List::stream)
+                .count();
+
+        double average = (count > 0) ? sum / count : 0.0;
+
+        // 소수점 둘째 자리까지 반올림
+        return Math.round(average * 100.0) / 100.0;
     }
 
     public void addGrid(int x, int y) {
