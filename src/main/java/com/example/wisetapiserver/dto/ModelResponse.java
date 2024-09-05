@@ -1,16 +1,14 @@
 package com.example.wisetapiserver.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
+@Setter
+@Getter
 public class ModelResponse {
     private List<List<Double>> illum;
+    private Double avg;
 
-    // getters and setters
-    public List<List<Double>> getIllum() {
-        return illum;
-    }
-
-    public void setIllum(List<List<Double>> illum) {
-        this.illum = illum;
-    }
 }
