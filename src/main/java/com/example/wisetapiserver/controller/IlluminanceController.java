@@ -28,6 +28,7 @@ public class IlluminanceController {
     private final ModelDataService modelDataService;
     private final PredictionApiService predictionApiService;
 
+
     @GetMapping("/grid")
     public Mono<ModelResponse> getIlluminanceMap(@RequestParam("x") int x, @RequestParam("y") int y) {
         ModelInput modelInput = modelDataService.ModelData(x, y);
