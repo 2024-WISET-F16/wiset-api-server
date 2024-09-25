@@ -2,8 +2,11 @@ package com.example.wisetapiserver.service.prediction;
 
 import com.example.wisetapiserver.domain.ModelInput;
 import com.example.wisetapiserver.dto.ModelResponse;
+import com.example.wisetapiserver.service.modeldata.ModelDataService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -11,9 +14,12 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class PredictionApiService {
+
     @Value("${model.server.uri}")
     private String url;
+    private final ModelDataService modelDataService;
 
     public Mono<ModelResponse> postModelServer(ModelInput modelInput){
 
@@ -53,6 +59,16 @@ public class PredictionApiService {
 
         // 소수점 둘째 자리까지 반올림
         return Math.round(average * 100.0) / 100.0;
+    }
+
+    @Scheduled(fixedRate = 600000)
+    public void saveDataScheduler(){
+        ModelInput modelInput = modelDataService.ModelData(3, 4);
+
+        ModelResponse response = postModelServer(modelInput).block();
+        Double avg = response.getAvg();
+
+
     }
 
 }
