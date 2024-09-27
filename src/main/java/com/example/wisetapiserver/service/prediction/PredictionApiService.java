@@ -69,8 +69,8 @@ public class PredictionApiService {
         return Math.round(average * 100.0) / 100.0;
     }
 
-    // 스케줄러를 통해 10분마다 mongo db에 평균 조도 데이터 저장
-    @Scheduled(initialDelay = 0, fixedRate = 600000)
+    // 10분 간격으로 mongo db에 평균 조도 데이터 저장(매 시각의 0분, 10분, 20분, ... )
+    @Scheduled(cron = "0 0/10 * * * ?")
     public void saveDataScheduler(){
 
         try {
